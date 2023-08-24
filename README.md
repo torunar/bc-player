@@ -1,4 +1,4 @@
-# BandAmp 2.9
+# [BandAmp 2.9](https://bandamp.fly.dev/)
 
 Bandcamp music player with a queue.
 

@@ -40,6 +40,7 @@ function getAlbumContents(string $url): array
         'title' => $track->title,
         'artist' => $albumInfo->artist,
         'url' => $track->file->{'mp3-128'},
+        'duration' => (int) $track->duration,
     ], $albumInfo->trackinfo);
 }
 

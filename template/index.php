@@ -23,6 +23,9 @@
             max-width: 600px;
             margin: 0 auto;
         }
+        .player__progress {
+            width: 100%;
+        }
         .player__controls {
             display: flex;
             gap: 0.5em;
@@ -43,7 +46,7 @@
             align-items: baseline;
         }
         .track-info--player {
-            margin: 1em 0;
+            margin: 1em 0 0.25em 0;
             padding: 0 0.25em;
         }
         .track-info__artist {
@@ -106,6 +109,7 @@
             <div class="track-info__artist track-info__artist--player"></div>
             <div class="track-info__track track-info__track--player"></div>
         </div>
+        <progress class="player__progress" max="100" value="0"></progress>
         <div class="player__controls">
             <button onclick="playPreviousTrack()">⏮️</button>
             <button onclick="pauseTrack()">⏸️</button>
@@ -170,6 +174,8 @@
             audio.fastSeek(0);
             audio.pause();
         });
+
+        document.querySelector('.player__progress').value = 0;
     }
 
     function playTrack(trackId = null) {
@@ -202,22 +208,45 @@
 
         document.querySelector('.track-info__artist--player').textContent = playlistItem.querySelector('.track-info__artist').textContent;
         document.querySelector('.track-info__track--player').textContent = playlistItem.querySelector('.track-info__track').textContent;
+        document.querySelector('.player__progress').max = document.getElementById(`audio${trackId}`).dataset.duration;
 
         fetch(`/?action=<?= Action::SET_CURRENT_TRACK->value ?>&trackId=${currentTrackId}`, {method: 'POST'});
     }
 
     function stopPlaylist() {
+        if (!currentTrackId) {
+            return;
+        }
+
         const resetTrackId = parseInt(/(\d+)$/.exec(document.querySelector('.playlist__item').id)[1]);
         setCurrentTrack(resetTrackId);
         stopMusic();
     }
 
     function pauseTrack() {
+        if (!currentTrackId) {
+            return;
+        }
+
         document.getElementById(`audio${currentTrackId}`).pause();
     }
 
     function unpauseTrack() {
+        if (!currentTrackId) {
+            return;
+        }
+
         document.getElementById(`audio${currentTrackId}`).play();
+    }
+
+    function updateTrackProgress(trackId = null) {
+        trackId = trackId || currentTrackId;
+        if (!trackId) {
+            return;
+        }
+
+        const audio = document.getElementById(`audio${trackId}`);
+        document.querySelector('.player__progress').value = parseInt(audio.currentTime);
     }
 
     (() => setCurrentTrack())();
