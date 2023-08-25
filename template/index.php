@@ -12,29 +12,36 @@
             padding: 0;
             font-family: monospace;
             font-size: 18px;
+            line-height: 1;
         }
-        button, input {
+        button, input, progress {
             border: 1px solid;
+            color: black;
+            border-radius: 0;
         }
         button {
             cursor: pointer;
+            background: whitesmoke;
         }
         .bandamp {
+            padding: 0 0.5em;
             max-width: 600px;
             margin: 0 auto;
         }
         .player__progress {
             width: 100%;
+            margin-bottom: 1em;
+            background: whitesmoke;
         }
         .player__controls {
             display: flex;
             gap: 0.5em;
-            margin: 1em 0;
+            margin-bottom: 1em;
         }
         .player__controls button {
             flex: 20%;
             padding: 0.25em;
-            font-size: 200%;
+            font-size: 150%;
         }
         .playlist {
             max-height: 600px;
@@ -46,13 +53,10 @@
             align-items: baseline;
         }
         .track-info--player {
-            margin: 1em 0 0.25em 0;
-            padding: 0 0.25em;
+            margin: 1em 0;
+            min-height: 18px;
         }
         .track-info__artist {
-            flex-shrink: 0;
-        }
-        .track-info__track {
             flex-shrink: 0;
         }
         .track-info__artist:after {
@@ -61,21 +65,32 @@
         .track-info__artist:empty:after {
             display: none;
         }
+        .track-info__track {
+            flex-shrink: 0;
+        }
         .track-info__play {
             background: none;
             border: none;
-            margin: 0 0.25em 0 0;
+            margin: 0 0.25em;
             opacity: 0;
             font-size: 125%;
         }
         .playlist__item:hover .track-info__play {
             opacity: 1;
         }
-        .playlist__item {
-            margin-left: 3em;
-        }
         .playlist__item--active {
             font-weight: bold;
+        }
+        .track-info__number {
+            min-width: 4ch;
+            text-align: right;
+        }
+        .track-info__number:before {
+            content: counter(playlist) ".";
+        }
+        .playlist__item {
+            counter-increment: playlist;
+            margin: 0.125em 0;
         }
         .playlist-controls {
             display: flex;
@@ -96,8 +111,7 @@
         }
         .project-link {
             position: absolute;
-            top: 100vh;
-            margin-top: -2em;
+            bottom: 1em;
             right: 1em;
         }
     </style>
@@ -118,15 +132,15 @@
             <button onclick="playNextTrack()">⏭️️</button>
         </div>
     </div>
-    <ol class="playlist">
-        <?php foreach (($queue ?? []) as $track): ?>
+    <div class="playlist">
+        <?php foreach (($queue ?? []) as $number => $track): ?>
             <?php require __DIR__ . '/playlistItem.php' ?>
         <?php endforeach; ?>
-    </ol>
+    </div>
     <form class="playlist-controls" action="/" method="post">
         <input class="playlist-controls__album-url" type="url" name="albumUrl" value="" placeholder="Bandcamp album URL">
-        <button class="playlist-controls__add" type="submit" name="action" value="<?= Action::ENQUEUE_ALBUM->value ?>">add</button>
-        <button class="playlist-controls__clear" type="submit" name="action" value="<?= Action::CLEAR_QUEUE->value ?>">clear</button>
+        <button class="playlist-controls__add" type="submit" name="action" value="<?= Action::ENQUEUE_ALBUM->value ?>">➕</button>
+        <button class="playlist-controls__clear" type="submit" name="action" value="<?= Action::CLEAR_QUEUE->value ?>">🗑️</button>
     </form>
 </div>
 <a class="project-link" target="_blank" href="https://github.com/torunar/bandamp-2.9">BandAmp 2.9</a>
