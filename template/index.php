@@ -44,17 +44,19 @@
             font-size: 150%;
         }
         .playlist {
-            max-height: 600px;
-            overflow-y: scroll;
-            margin: 1em 0;
+            max-height: calc(100vh - 230px);
+            overflow: auto;
+            padding-bottom: 1em;
+            margin-bottom: 1em;
         }
         .track-info {
             display: flex;
             align-items: baseline;
         }
         .track-info--player {
-            margin: 1em 0;
+            padding: 1em 0;
             min-height: 18px;
+            overflow-x: auto;
         }
         .track-info__artist {
             flex-shrink: 0;
@@ -95,7 +97,6 @@
         .playlist-controls {
             display: flex;
             gap: 0.5em;
-            margin: 0.5em 0;
         }
         .playlist-controls__album-url {
             flex: 1;

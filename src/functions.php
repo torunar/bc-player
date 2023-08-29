@@ -27,7 +27,8 @@ function getAlbumContents(string $url): array
     ]);
 
     $html = new DOMDocument();
-    $html->loadHTML(curl_exec($client), LIBXML_NOERROR | LIBXML_NOWARNING);
+    $htmlContent = preg_replace('/(<!DOCTYPE [^>]*>)/i', '$1<meta charset="UTF-8">', curl_exec($client));
+    $html->loadHTML($htmlContent, LIBXML_NOERROR | LIBXML_NOWARNING);
     $script = (new DOMXPath($html))->query('//script[@data-tralbum]');
 
     $albumInfo = json_decode($script->item(0)->attributes->getNamedItem('data-tralbum')->nodeValue);
