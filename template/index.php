@@ -70,16 +70,6 @@
         .track-info__track {
             flex-shrink: 0;
         }
-        .track-info__play {
-            background: none;
-            border: none;
-            margin: 0 0.25em;
-            opacity: 0;
-            font-size: 125%;
-        }
-        .playlist__item:hover .track-info__play {
-            opacity: 1;
-        }
         .playlist__item--active {
             font-weight: bold;
         }
@@ -89,10 +79,15 @@
         }
         .track-info__number:before {
             content: counter(playlist) ".";
+            padding-right: 1ch;
         }
         .playlist__item {
             counter-increment: playlist;
-            margin: 0.125em 0;
+            padding: 0.125em 0;
+            cursor: pointer;
+        }
+        .playlist__item:hover {
+            background: whitesmoke;
         }
         .playlist-controls {
             display: flex;
