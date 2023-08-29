@@ -264,7 +264,15 @@
         document.querySelector('.player__progress').value = parseInt(audio.currentTime);
     }
 
-    (() => setCurrentTrack())();
+    (() => {
+        navigator.mediaSession.setActionHandler('previoustrack', function() {
+            playPreviousTrack();
+        });
+        navigator.mediaSession.setActionHandler('nexttrack', function() {
+            playNextTrack();
+        });
+        setCurrentTrack();
+    })();
 </script>
 </body>
 </html>

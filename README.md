@@ -9,6 +9,6 @@ I didn't like it, so I fixed the problem the only way I know: with some good ol'
 
 ## Contributing
 
-I see this project as feature-complete. I might add a thing or two occasionally.
+I see this project as feature-complete. I will mostly focus on fixing bugs, but might add a thing or two occasionally.
 
 If you are willing to contribute to the project, be my guest! Make forks, implement features, make pull requests.
