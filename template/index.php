@@ -186,7 +186,7 @@
     function stopMusic() {
         const audio = document.getElementById('audio');
         audio.pause();
-        audio.fastSeek(0);
+        audio.currentTime = 0;
 
         document.querySelector('.player__progress').value = 0;
     }
