@@ -127,7 +127,7 @@
             <div class="track-info__artist track-info__artist--player"></div>
             <div class="track-info__track track-info__track--player"></div>
         </div>
-        <progress class="player__progress" max="100" value="0"></progress>
+        <progress class="player__progress" max="1" value="0"></progress>
         <div class="player__controls">
             <button onclick="playPreviousTrack()">⏮️</button>
             <button onclick="pauseTrack()">⏸️</button>
@@ -210,12 +210,12 @@
 
         const playlistItem = document.getElementById(`playlistItem${trackId}`);
         setActivePlaylistItem(trackId);
-
-        document.querySelector('.track-info__artist--player').textContent = playlistItem.querySelector('.track-info__artist').textContent;
-        document.querySelector('.track-info__track--player').textContent = playlistItem.querySelector('.track-info__track').textContent;
-        document.querySelector('.player__progress').max = playlistItem.dataset.duration;
-        document.querySelector('.player__progress').value = 0;
-        document.getElementById('audio').src = playlistItem.dataset.src;
+        setPlayingTrackInformation(
+            playlistItem.querySelector('.track-info__artist').textContent,
+            playlistItem.querySelector('.track-info__track').textContent,
+            playlistItem.dataset.duration,
+            playlistItem.dataset.src
+        );
 
         fetch(`/?action=<?= Action::SET_CURRENT_TRACK->value ?>&trackId=${currentTrackId}`, {method: 'POST'});
     }
@@ -270,6 +270,25 @@
         document.querySelector('.player__progress').value = parseInt(audio.currentTime);
     }
 
+    function setPlayingTrackInformation(
+        artist,
+        track,
+        duration,
+        src = null
+    ) {
+        document.querySelector('.track-info__artist--player').textContent = artist;
+        document.querySelector('.track-info__track--player').textContent = track;
+        document.querySelector('.player__progress').max = duration;
+        document.querySelector('.player__progress').value = 0;
+        if (null !== src) {
+            document.getElementById('audio').src = src;
+        }
+
+        document.title = null !== src
+            ? `${artist} — ${track}`
+            : 'Bandamp 2.9';
+    }
+
     function enqueueAlbum() {
         const url = document.querySelector('.playlist-controls__album-url');
         if (!url.checkValidity()) {
@@ -297,10 +316,7 @@
         setCurrentTrack(null);
 
         document.querySelector('.playlist').innerHTML = '';
-        document.querySelector('.track-info__artist--player').textContent = '';
-        document.querySelector('.track-info__track--player').textContent = '';
-        document.querySelector('.player__progress').max = 100;
-        document.querySelector('.player__progress').value = 0;
+        setPlayingTrackInformation('', '', 1);
 
         fetch(`/?action=<?= Action::CLEAR_QUEUE->value ?>`, {method: 'POST'});
     }
