@@ -26,24 +26,28 @@ function getAlbumContents(string $url): array
         CURLOPT_FOLLOWLOCATION => true,
     ]);
 
-    $html = new DOMDocument();
-    $htmlContent = preg_replace('/(<!DOCTYPE [^>]*>)/i', '$1<meta charset="UTF-8">', curl_exec($client));
-    $html->loadHTML($htmlContent, LIBXML_NOERROR | LIBXML_NOWARNING);
-    $script = (new DOMXPath($html))->query('//script[@data-tralbum]');
+    try {
+        $html = new DOMDocument();
+        $htmlContent = preg_replace('/(<!DOCTYPE [^>]*>)/i', '$1<meta charset="UTF-8">', curl_exec($client));
+        $html->loadHTML($htmlContent, LIBXML_NOERROR | LIBXML_NOWARNING);
+        $script = (new DOMXPath($html))->query('//script[@data-tralbum]');
 
-    $albumInfo = json_decode($script->item(0)->attributes->getNamedItem('data-tralbum')->nodeValue);
-    $tracksWithAudio = array_filter(
-        $albumInfo->trackinfo,
-        fn(stdClass $track): bool => !empty($track->file->{'mp3-128'})
-    );
+        $albumInfo = json_decode($script->item(0)->attributes->getNamedItem('data-tralbum')->nodeValue);
+        $tracksWithAudio = array_filter(
+            $albumInfo->trackinfo,
+            fn(stdClass $track): bool => !empty($track->file->{'mp3-128'})
+        );
 
-    return array_map(fn(stdClass $track): stdClass => (object) [
-        'id' => $track->id,
-        'title' => $track->title,
-        'artist' => $albumInfo->artist,
-        'url' => $track->file->{'mp3-128'},
-        'duration' => (int) $track->duration,
-    ], $tracksWithAudio);
+        return array_map(fn(stdClass $track): stdClass => (object) [
+            'id' => $track->id,
+            'title' => $track->title,
+            'artist' => $albumInfo->artist,
+            'url' => $track->file->{'mp3-128'},
+            'duration' => (int) $track->duration,
+        ], $tracksWithAudio);
+    } catch (Throwable) {}
+
+    return [];
 }
 
 function enqueue(array &$storage, array $tracks): void
@@ -79,4 +83,11 @@ function renderPlayer(array $storage): void
     $currentTrackId = $storage['currentTrackId'];
 
     require_once __DIR__ . '/../template/index.php';
+}
+
+function renderPlaylist(array $storage): void
+{
+    $queue = $storage['queue'];
+
+    require_once __DIR__ . '/../template/player.php';
 }

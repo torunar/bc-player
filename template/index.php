@@ -15,13 +15,17 @@
             line-height: 1;
         }
         button, input, progress {
-            border: 1px solid;
             color: black;
             border-radius: 0;
         }
         button {
             cursor: pointer;
             background: whitesmoke;
+            min-height: 45px;
+            min-width: 45px;
+        }
+        button:disabled {
+            cursor: not-allowed;
         }
         .bandamp {
             padding: 0 0.5em;
@@ -32,6 +36,7 @@
             width: 100%;
             margin-bottom: 1em;
             background: whitesmoke;
+            height: 0.25em;
         }
         .player__controls {
             display: flex;
@@ -40,14 +45,13 @@
         }
         .player__controls button {
             flex: 20%;
-            padding: 0.25em;
             font-size: 150%;
         }
         .playlist {
-            max-height: calc(100vh - 230px);
+            max-height: calc(100vh - 14em);
             overflow: auto;
             padding-bottom: 1em;
-            margin-bottom: 1em;
+            margin: 1em 0;
         }
         .track-info {
             display: flex;
@@ -55,7 +59,6 @@
         }
         .track-info--player {
             padding: 1em 0;
-            min-height: 18px;
             overflow-x: auto;
         }
         .track-info__artist {
@@ -66,6 +69,9 @@
         }
         .track-info__artist:empty:after {
             display: none;
+        }
+        .track-info__artist--player {
+            min-height: 18px;
         }
         .track-info__track {
             flex-shrink: 0;
@@ -99,11 +105,9 @@
         }
         .playlist-controls__add {
             flex: 0;
-            padding: 0 0.5em;
         }
         .playlist-controls__clear {
             flex: 0;
-            padding: 0 0.5em;
         }
         .project-link {
             position: absolute;
@@ -116,6 +120,10 @@
 <div class="bandamp">
     <div class="player">
         <div class="track-info track-info--player">
+            <audio id="audio"
+                   onended="playNextTrack()"
+                   ontimeupdate="updateTrackProgress()"
+            ></audio>
             <div class="track-info__artist track-info__artist--player"></div>
             <div class="track-info__track track-info__track--player"></div>
         </div>
@@ -128,32 +136,29 @@
             <button onclick="playNextTrack()">⏭️️</button>
         </div>
     </div>
-    <div class="playlist">
-        <?php foreach (($queue ?? []) as $number => $track): ?>
-            <?php require __DIR__ . '/playlistItem.php' ?>
-        <?php endforeach; ?>
+    <div class="playlist-controls">
+        <input class="playlist-controls__album-url" type="url" required value="" placeholder="Bandcamp album URL">
+        <button class="playlist-controls__add" onclick="enqueueAlbum()">➕</button>
+        <button class="playlist-controls__clear" onclick="clearPlaylist()">🗑️</button>
     </div>
-    <form class="playlist-controls" action="/" method="post">
-        <input class="playlist-controls__album-url" type="url" name="albumUrl" value="" placeholder="Bandcamp album URL">
-        <button class="playlist-controls__add" type="submit" name="action" value="<?= Action::ENQUEUE_ALBUM->value ?>">➕</button>
-        <button class="playlist-controls__clear" type="submit" name="action" value="<?= Action::CLEAR_QUEUE->value ?>">🗑️</button>
-    </form>
+    <div class="playlist">
+        <?php require_once __DIR__ . '/player.php' ?>
+    </div>
 </div>
 <a class="project-link" target="_blank" href="https://github.com/torunar/bandamp-2.9">BandAmp 2.9</a>
 <script>
-    let currentTrackId = <?= $currentTrackId ?? 'null' ?>;
+    let currentTrackId;
 
-    function playNextTrack(trackId = null) {
-        trackId = trackId || currentTrackId;
-        if (!trackId) {
+    function playNextTrack() {
+        if (!currentTrackId) {
             return;
         }
 
         const allPlaylistItems = document.querySelectorAll('.playlist__item');
         let nextTrackId = null;
         for (let i = 0; i < allPlaylistItems.length - 1; i++) {
-            if (allPlaylistItems[i].id === `playlistItem${trackId}`) {
-                nextTrackId = parseInt(/(\d+)$/.exec(allPlaylistItems[i + 1].id)[1]);
+            if (parseInt(allPlaylistItems[i].dataset.id) === currentTrackId) {
+                nextTrackId = parseInt(allPlaylistItems[i + 1].dataset.id);
                 break;
             }
         }
@@ -162,16 +167,15 @@
     }
 
     function playPreviousTrack(trackId = null) {
-        trackId = trackId || currentTrackId;
-        if (!trackId) {
+        if (!currentTrackId) {
             return;
         }
 
         const allPlaylistItems = document.querySelectorAll('.playlist__item');
         let previousTrackId = null;
         for (let i = 1; i < allPlaylistItems.length; i++) {
-            if (allPlaylistItems[i].id === `playlistItem${trackId}`) {
-                previousTrackId = parseInt(/(\d+)$/.exec(allPlaylistItems[i - 1].id)[1]);
+            if (parseInt(allPlaylistItems[i].dataset.id) === currentTrackId) {
+                previousTrackId = parseInt(allPlaylistItems[i - 1].dataset.id);
                 break;
             }
         }
@@ -180,10 +184,9 @@
     }
 
     function stopMusic() {
-        document.querySelectorAll('audio').forEach((audio) => {
-            audio.fastSeek(0);
-            audio.pause();
-        });
+        const audio = document.getElementById('audio');
+        audio.pause();
+        audio.fastSeek(0);
 
         document.querySelector('.player__progress').value = 0;
     }
@@ -194,19 +197,33 @@
             return;
         }
 
-        setCurrentTrack(trackId);
         stopMusic();
-
-        document.getElementById(`audio${trackId}`).play();
+        setCurrentTrack(trackId);
+        unpauseTrack();
     }
 
     function setCurrentTrack(trackId = null) {
-        trackId = trackId || currentTrackId;
-        if (!trackId) {
+        currentTrackId = trackId;
+        if (!currentTrackId) {
             return;
         }
 
-        currentTrackId = trackId;
+        const playlistItem = document.getElementById(`playlistItem${trackId}`);
+        setActivePlaylistItem(trackId);
+
+        document.querySelector('.track-info__artist--player').textContent = playlistItem.querySelector('.track-info__artist').textContent;
+        document.querySelector('.track-info__track--player').textContent = playlistItem.querySelector('.track-info__track').textContent;
+        document.querySelector('.player__progress').max = playlistItem.dataset.duration;
+        document.querySelector('.player__progress').value = 0;
+        document.getElementById('audio').src = playlistItem.dataset.src;
+
+        fetch(`/?action=<?= Action::SET_CURRENT_TRACK->value ?>&trackId=${currentTrackId}`, {method: 'POST'});
+    }
+
+    function setActivePlaylistItem(trackId) {
+        if (!trackId) {
+            return;
+        }
 
         const playlistItem = document.getElementById(`playlistItem${trackId}`);
         const currentPlaylistItem = document.querySelector('.playlist__item--active');
@@ -215,12 +232,6 @@
         }
 
         playlistItem.className = `${playlistItem.className} playlist__item--active`;
-
-        document.querySelector('.track-info__artist--player').textContent = playlistItem.querySelector('.track-info__artist').textContent;
-        document.querySelector('.track-info__track--player').textContent = playlistItem.querySelector('.track-info__track').textContent;
-        document.querySelector('.player__progress').max = document.getElementById(`audio${trackId}`).dataset.duration;
-
-        fetch(`/?action=<?= Action::SET_CURRENT_TRACK->value ?>&trackId=${currentTrackId}`, {method: 'POST'});
     }
 
     function stopPlaylist() {
@@ -238,7 +249,7 @@
             return;
         }
 
-        document.getElementById(`audio${currentTrackId}`).pause();
+        document.getElementById(`audio`).pause();
     }
 
     function unpauseTrack() {
@@ -246,7 +257,7 @@
             return;
         }
 
-        document.getElementById(`audio${currentTrackId}`).play();
+        document.getElementById(`audio`).play();
     }
 
     function updateTrackProgress(trackId = null) {
@@ -255,8 +266,43 @@
             return;
         }
 
-        const audio = document.getElementById(`audio${trackId}`);
+        const audio = document.getElementById(`audio`);
         document.querySelector('.player__progress').value = parseInt(audio.currentTime);
+    }
+
+    function enqueueAlbum() {
+        const url = document.querySelector('.playlist-controls__album-url');
+        if (!url.checkValidity()) {
+            return;
+        }
+
+        const controls = document.querySelectorAll('button');
+        controls.forEach((button) => button.disabled = true);
+
+        fetch(`/?action=<?= Action::ENQUEUE_ALBUM->value ?>&albumUrl=${encodeURIComponent(url.value)}`, {method: 'POST'})
+            .then((response) => response.text())
+            .then((playlistHtml) => {
+                document.querySelector('.playlist').innerHTML = playlistHtml;
+                controls.forEach((button) => button.disabled = false);
+                url.value = '';
+                if (!currentTrackId) {
+                    setCurrentTrack(parseInt(document.querySelector('.playlist__item').dataset.id));
+                }
+                setActivePlaylistItem(currentTrackId);
+            });
+    }
+
+    function clearPlaylist() {
+        stopMusic();
+        setCurrentTrack(null);
+
+        document.querySelector('.playlist').innerHTML = '';
+        document.querySelector('.track-info__artist--player').textContent = '';
+        document.querySelector('.track-info__track--player').textContent = '';
+        document.querySelector('.player__progress').max = 100;
+        document.querySelector('.player__progress').value = 0;
+
+        fetch(`/?action=<?= Action::CLEAR_QUEUE->value ?>`, {method: 'POST'});
     }
 
     (() => {
@@ -266,7 +312,7 @@
         navigator.mediaSession.setActionHandler('nexttrack', function() {
             playNextTrack();
         });
-        setCurrentTrack();
+        setCurrentTrack(<?= $currentTrackId ?? 'null' ?>);
     })();
 </script>
 </body>

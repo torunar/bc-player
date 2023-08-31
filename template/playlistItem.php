@@ -1,10 +1,10 @@
-<div id="playlistItem<?= $track->id ?>" class="playlist__item" ondblclick="playTrack(<?= $track->id ?>)">
-    <audio id="audio<?= $track->id ?>"
-           src="<?= $track->url ?>"
-           onended="playNextTrack(<?= $track->id ?>);"
-           ontimeupdate="updateTrackProgress(<?= $track->id ?>)"
-           data-duration="<?= $track->duration ?>"
-    ></audio>
+<div id="playlistItem<?= $track->id ?>"
+     class="playlist__item"
+     ondblclick="playTrack(<?= $track->id ?>)"
+     data-src="<?= $track->url ?>"
+     data-duration="<?= $track->duration ?>"
+     data-id="<?= $track->id ?>"
+>
     <div class="track-info track-info__playlist">
         <div class="track-info__number"></div>
         <div class="track-info__artist track-info__artist--playlist"><?= $track->artist ?></div>
