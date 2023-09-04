@@ -15,3 +15,7 @@ primary_region = "arn"
   [[services.ports]]
     port = 443
     handlers = ["tls", "http"]
+
+[[statics]]
+  guest_path = "/srv/public/static"
+  url_prefix = "/static"
