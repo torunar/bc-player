@@ -95,15 +95,10 @@ body {
 }
 
 .track-info__artist {
-    flex-shrink: 0;
-}
-
-.track-info__artist:after {
-    content: ' —';
-}
-
-.track-info__artist:empty:after {
-    display: none;
+    flex-grow: 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .track-info__artist--player {
@@ -115,6 +110,14 @@ body {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+}
+
+.track-info__track:before {
+    content: '— ';
+}
+
+.track-info__track:empty:before {
+    display: none;
 }
 
 .playlist__item--active * {

@@ -1,5 +1,7 @@
 # [BandAmp 2.9](https://bandamp.fly.dev/)
 
+![](.github/img.png)
+
 Bandcamp music player with a queue.
 
 ## Reasoning behind the project
