@@ -85,27 +85,32 @@ body {
 .track-info--player {
     margin: 0.5em 0;
     padding: 0.25em 0.125em;
-    overflow-x: auto;
+    overflow: hidden;
     background: black;
     border: 1px solid #717485;
+    min-height: 30px;
 }
 
 .track-info--playlist {
     padding: 0 0.125em;
 }
 
-.track-info__artist {
+.track-info__artist--player {
+    flex-shrink: 0;
+}
+
+.track-info__track--player {
+    flex-shrink: 0;
+}
+
+.track-info__artist--playlist {
     flex-grow: 0;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
 }
 
-.track-info__artist--player {
-    min-height: 18px;
-}
-
-.track-info__track {
+.track-info__track--playlist {
     flex-grow: 1;
     text-overflow: ellipsis;
     white-space: nowrap;

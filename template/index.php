@@ -36,20 +36,15 @@
 <a class="project-link" target="_blank" href="https://github.com/torunar/bandamp-2.9">BandAmp 2.9</a>
 <script src="/static/app.js"></script>
 <script>
-    const actions = {
-        enqueueAlbum: '<?= Action::ENQUEUE_ALBUM->value ?>',
-        setCurrentTrack: '<?= Action::SET_CURRENT_TRACK->value ?>',
-        clearQueue: '<?= Action::CLEAR_QUEUE->value ?>'
-    };
-
     (() => {
-        navigator.mediaSession.setActionHandler('previoustrack', function() {
-            playPreviousTrack();
-        });
-        navigator.mediaSession.setActionHandler('nexttrack', function() {
-            playNextTrack();
-        });
-        setCurrentTrack(<?= $currentTrackId ?? 'null' ?>);
+        setup(
+            {
+                enqueueAlbum: '<?= Action::ENQUEUE_ALBUM->value ?>',
+                setCurrentTrack: '<?= Action::SET_CURRENT_TRACK->value ?>',
+                clearQueue: '<?= Action::CLEAR_QUEUE->value ?>'
+            },
+            <?= $currentTrackId ?? 'null' ?>
+        );
     })();
 </script>
 </body>

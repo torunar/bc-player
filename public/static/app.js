@@ -1,4 +1,10 @@
-let currentTrackId;
+let currentTrackId = null;
+let actions = {
+    enqueueAlbum: null,
+    setCurrentTrack: null,
+    clearQueue: null
+};
+let isTrackInfoScrollPositionResetScheduled = false;
 
 function playNextTrack() {
     if (!currentTrackId) {
@@ -131,6 +137,7 @@ function setPlayingTrackInformation(
     document.querySelector('.track-info__track--player').textContent = track;
     document.querySelector('.player__progress').max = duration;
     document.querySelector('.player__progress').value = 0;
+    document.querySelector('.track-info--player').scrollLeft = 0;
     if (null !== src) {
         document.getElementById('audio').src = src;
     }
@@ -162,6 +169,20 @@ function enqueueAlbum() {
         });
 }
 
+function scrollTrackInfo() {
+    const trackInfo = document.querySelector('.track-info--player');
+    const targetScroll = trackInfo.scrollLeft += 10;
+    if (trackInfo.scrollLeft < targetScroll) {
+        if (isTrackInfoScrollPositionResetScheduled) {
+            trackInfo.scrollLeft = 0;
+            isTrackInfoScrollPositionResetScheduled = false;
+            return;
+        }
+
+        isTrackInfoScrollPositionResetScheduled = true;
+    }
+}
+
 function clearPlaylist() {
     stopMusic();
     setCurrentTrack(null);
@@ -170,4 +191,20 @@ function clearPlaylist() {
     setPlayingTrackInformation('', '', 1);
 
     fetch(`/?action=${actions.clearQueue}`, {method: 'POST'});
+}
+
+function setup(actionNames, trackId) {
+    actions.enqueueAlbum = actionNames.enqueueAlbum;
+    actions.setCurrentTrack = actionNames.setCurrentTrack;
+    actions.clearQueue = actionNames.clearQueue;
+
+    navigator.mediaSession.setActionHandler('previoustrack', function() {
+        playPreviousTrack();
+    });
+    navigator.mediaSession.setActionHandler('nexttrack', function() {
+        playNextTrack();
+    });
+
+    setCurrentTrack(trackId);
+    setInterval(scrollTrackInfo, 1100);
 }
