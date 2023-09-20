@@ -193,6 +193,14 @@ function clearPlaylist() {
     fetch(`/?action=${actions.clearQueue}`, {method: 'POST'});
 }
 
+function seekTrack(percentage) {
+    if (!currentTrackId) {
+        return;
+    }
+
+    document.getElementById('audio').currentTime = document.querySelector('.player__progress').max * percentage;
+}
+
 function setup(actionNames, trackId) {
     actions.enqueueAlbum = actionNames.enqueueAlbum;
     actions.setCurrentTrack = actionNames.setCurrentTrack;
@@ -204,6 +212,11 @@ function setup(actionNames, trackId) {
     navigator.mediaSession.setActionHandler('nexttrack', function() {
         playNextTrack();
     });
+
+    document.querySelector('.player__progress').onclick = (event) => {
+        let seeker = event.target.getBoundingClientRect();
+        seekTrack((event.clientX - seeker.left) / seeker.width);
+    };
 
     setCurrentTrack(trackId);
     setInterval(scrollTrackInfo, 1100);
