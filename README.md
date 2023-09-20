@@ -4,6 +4,14 @@
 
 Bandcamp music player with a queue.
 
+## Bandcamp integraiton
+
+I also made a Firefox extension that adds "Enqueue in Bandamp" context menu action so you can add albums to your listening queue directly from the Bandcamp feed page:
+
+[context-menu-integration.webm](https://github.com/torunar/bandamp-2.9/assets/1062217/08d875f8-1cf6-44c9-a8c5-00498009ef6a)
+
+You can download the extension here: [bandamp-2.9-helper.xpi](https://github.com/torunar/bandamp-2.9-helper/releases/download/v2.9/bandamp-2.9-helper.xpi).
+
 ## Reasoning behind the project
 
 Bandcamp doesn't let you play multiple albums in a queue.
