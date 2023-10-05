@@ -1,3 +1,14 @@
+:root {
+    --playerBgColor: #373857;
+    --borderColor: #717485;
+    --buttonColor: #beced7;
+    --controlBgColor: #000000;
+    --controlColor: #08db08;
+    --progressColor: #af9967;
+    --focusBgColor: #0201bf;
+    --focusColor: #ffffff;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -5,56 +16,48 @@
     font-family: monospace;
     font-size: 18px;
     line-height: 1;
-    color: #08db08;
-}
-
-button, input, progress {
-    color: black;
     border-radius: 0;
 }
 
 button {
     cursor: pointer;
-    background: #beced7;
-    min-height: 45px;
-    min-width: 45px;
+    background: var(--buttonColor);
+    min-height: 1.7em;
+    min-width: 2.4em;
 }
 
 button:disabled {
     cursor: not-allowed;
 }
 
-body {
-    padding: 1em;
-}
-
 .bandamp {
     padding: 0 0.5em;
     max-width: 620px;
+    height: 100vh;
     margin: 0 auto;
-    border: 5px double #717485;
-    background: #373857;
+    border: 5px double var(--borderColor);
+    background: var(--playerBgColor);
 }
 
 .player__progress {
     width: 100%;
     margin-bottom: 1em;
     height: 0.5em;
-    background: black;
-    border: 1px solid #717485;
+    background: var(--controlBgColor);
+    border: 1px solid var(--borderColor);
     cursor: text;
 }
 
 .player__progress::-webkit-progress-bar {
-    background: black;
+    background: var(--controlBgColor);
 }
 
 .player__progress::-moz-progress-bar {
-    background: #af9967;
+    background: var(--progressColor);
 }
 
 .player__progress::-webkit-progress-value {
-    background: #af9967;
+    background: var(--progressColor);
 }
 
 .player__controls {
@@ -69,12 +72,12 @@ body {
 }
 
 .playlist {
-    max-height: calc(100vh - 16em);
+    height: calc(100vh - 12.2em);
     overflow: auto;
     padding: 0.25em 0;
     margin: 1em 0 0.5em 0;
-    background: black;
-    border: 1px solid #717485;
+    background: var(--controlBgColor);
+    border: 1px solid var(--borderColor);
 }
 
 .track-info {
@@ -83,12 +86,16 @@ body {
     gap: 1ch;
 }
 
+.track-info > * {
+    color: var(--controlColor);
+}
+
 .track-info--player {
     margin: 0.5em 0;
     padding: 0.25em 0.125em;
     overflow: hidden;
-    background: black;
-    border: 1px solid #717485;
+    background: var(--controlBgColor);
+    border: 1px solid var(--borderColor);
     min-height: 30px;
 }
 
@@ -127,7 +134,7 @@ body {
 }
 
 .playlist__item--active * {
-    color: white;
+    color: var(--focusColor);
 }
 
 .track-info__number {
@@ -146,7 +153,7 @@ body {
 }
 
 .playlist__item:hover {
-    background: #0201bf;
+    background: var(--focusBgColor);
 }
 
 .playlist-controls {
@@ -169,8 +176,26 @@ body {
 }
 
 .project-link {
-    position: absolute;
-    bottom: 1em;
-    right: 1em;
-    color: #0201bf;
+    display: none;
+}
+
+@media(min-width: 640px) {
+    body {
+        padding: 1em;
+    }
+
+    .bandamp {
+        height: calc(100vh - 4em);
+    }
+
+    .playlist {
+        height: calc(100vh - 16.2em);
+    }
+
+    .project-link {
+        display: inline-block;
+        position: absolute;
+        bottom: 1em;
+        right: 1em;
+    }
 }
