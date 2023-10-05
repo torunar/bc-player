@@ -23,7 +23,7 @@ button {
     cursor: pointer;
     background: var(--buttonColor);
     min-height: 1.7em;
-    min-width: 2.4em;
+    min-width: 2em;
 }
 
 button:disabled {

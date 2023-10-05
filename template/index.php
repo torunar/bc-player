@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>BandAmp 2.9</title>
     <link rel="stylesheet" href="/static/app.css" />
+    <link rel="manifest" href="/static/manifest.json" />
 </head>
 <body>
 <div class="bandamp">
