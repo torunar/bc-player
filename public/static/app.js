@@ -41,10 +41,9 @@ function playPreviousTrack(trackId = null) {
 }
 
 function stopMusic() {
-    const audio = document.getElementById('audio');
-    audio.pause();
-    audio.currentTime = 0;
+    pauseTrack();
 
+    document.getElementById('audio').currentTime = 0;
     document.querySelector('.player__progress').value = 0;
 }
 
@@ -107,6 +106,9 @@ function pauseTrack() {
     }
 
     document.getElementById(`audio`).pause();
+
+    document.querySelector('.player').className = document.querySelector('.player').className.replace(/\s*player--paused/, '');
+    document.querySelector('.player').className = `${document.querySelector('.player').className} player--paused`;
 }
 
 function unpauseTrack() {
@@ -115,6 +117,8 @@ function unpauseTrack() {
     }
 
     document.getElementById(`audio`).play();
+
+    document.querySelector('.player').className = document.querySelector('.player').className.replace(/\s*player--paused/, '');
 }
 
 function updateTrackProgress(trackId = null) {

@@ -10,11 +10,20 @@
 </head>
 <body>
 <div class="bandamp">
-    <div class="player">
-        <div class="track-info track-info--player">
-            <audio id="audio" onended="playNextTrack()" ontimeupdate="updateTrackProgress()"></audio>
-            <div class="track-info__artist track-info__artist--player"></div>
-            <div class="track-info__track track-info__track--player"></div>
+    <div class="player player--paused">
+        <div class="player__track-wrapper">
+            <div class="equalizer">
+                <span class="equalizer-bar equalizer-bar--1"></span>
+                <span class="equalizer-bar equalizer-bar--2"></span>
+                <span class="equalizer-bar equalizer-bar--3"></span>
+                <span class="equalizer-bar equalizer-bar--4"></span>
+                <span class="equalizer-bar equalizer-bar--5"></span>
+            </div>
+            <div class="track-info track-info--player">
+                <audio id="audio" onended="playNextTrack()" ontimeupdate="updateTrackProgress()"></audio>
+                <div class="track-info__artist track-info__artist--player"></div>
+                <div class="track-info__track track-info__track--player"></div>
+            </div>
         </div>
         <progress class="player__progress" max="1" value="0"></progress>
         <div class="player__controls">
