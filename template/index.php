@@ -27,17 +27,17 @@
         </div>
         <progress class="player__progress" max="1" value="0"></progress>
         <div class="player__controls">
-            <button onclick="playPreviousTrack()">⏮️</button>
-            <button onclick="pauseTrack()">⏸️</button>
-            <button onclick="unpauseTrack()">▶️️</button>
-            <button onclick="stopPlaylist()">⏹️</button>
-            <button onclick="playNextTrack()">⏭️️</button>
+            <button onclick="playPreviousTrack()">⏮</button>
+            <button onclick="pauseTrack()">⏸</button>
+            <button onclick="unpauseTrack()">▶</button>
+            <button onclick="stopPlaylist()">⏹</button>
+            <button onclick="playNextTrack()">⏭</button>
         </div>
     </div>
     <div class="playlist-controls">
         <input class="playlist-controls__album-url" type="url" required value="" placeholder="Bandcamp album URL">
         <button class="playlist-controls__add" onclick="enqueueAlbum()">➕</button>
-        <button class="playlist-controls__clear" onclick="clearPlaylist()">🗑️</button>
+        <button class="playlist-controls__clear" onclick="clearPlaylist()" title="Clear">⏏</button>
     </div>
     <div class="playlist">
         <?php require_once __DIR__ . '/player.php' ?>
