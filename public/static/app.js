@@ -210,10 +210,16 @@ function setup(actionNames, trackId) {
     actions.setCurrentTrack = actionNames.setCurrentTrack;
     actions.clearQueue = actionNames.clearQueue;
 
-    navigator.mediaSession.setActionHandler('previoustrack', function() {
+    navigator.mediaSession.setActionHandler('play', () => {
+        unpauseTrack();
+    });
+    navigator.mediaSession.setActionHandler('pause', () => {
+        pauseTrack();
+    });
+    navigator.mediaSession.setActionHandler('previoustrack', () => {
         playPreviousTrack();
     });
-    navigator.mediaSession.setActionHandler('nexttrack', function() {
+    navigator.mediaSession.setActionHandler('nexttrack', () => {
         playNextTrack();
     });
 

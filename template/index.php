@@ -13,11 +13,11 @@
     <div class="player player--paused">
         <div class="player__track-wrapper">
             <div class="equalizer">
-                <span class="equalizer-bar equalizer-bar--1"></span>
-                <span class="equalizer-bar equalizer-bar--2"></span>
-                <span class="equalizer-bar equalizer-bar--3"></span>
-                <span class="equalizer-bar equalizer-bar--4"></span>
-                <span class="equalizer-bar equalizer-bar--5"></span>
+                <span class="equalizer-bar" style="--duration: 0.5s"></span>
+                <span class="equalizer-bar" style="--duration: 0.6s"></span>
+                <span class="equalizer-bar" style="--duration: 1.3s"></span>
+                <span class="equalizer-bar" style="--duration: 0.9s"></span>
+                <span class="equalizer-bar" style="--duration: 0.7s"></span>
             </div>
             <div class="track-info track-info--player">
                 <audio id="audio" onended="playNextTrack()" ontimeupdate="updateTrackProgress()"></audio>

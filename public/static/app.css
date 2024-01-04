@@ -70,30 +70,11 @@ button:disabled {
     animation-name: equalizer;
     animation-iteration-count: infinite;
     animation-direction: alternate;
+    animation-duration: var(--duration); /* defined in DOM */
 }
 
 .player--paused .equalizer-bar:after {
     animation-play-state: paused;
-}
-
-.equalizer-bar--1:after {
-    animation-duration: 0.5s;
-}
-
-.equalizer-bar--2:after {
-    animation-duration: 0.6s;
-}
-
-.equalizer-bar--3:after {
-    animation-duration: 1.3s;
-}
-
-.equalizer-bar--4:after {
-    animation-duration: 0.9s;
-}
-
-.equalizer-bar--5:after {
-    animation-duration: 0.7s;
 }
 
 .player__progress {
@@ -256,4 +237,3 @@ button:disabled {
         right: 1em;
     }
 }
-
