@@ -6,7 +6,7 @@ let actions = {
 };
 let isTrackInfoScrollPositionResetScheduled = false;
 
-function playNextTrack() {
+function playNextTrack(isAutoPlay = false) {
     if (!currentTrackId) {
         return;
     }
@@ -20,7 +20,12 @@ function playNextTrack() {
         }
     }
 
-    nextTrackId && playTrack(nextTrackId);
+    if (nextTrackId) {
+        playTrack(nextTrackId);
+        return;
+    }
+
+    isAutoPlay && pauseTrack();
 }
 
 function playPreviousTrack(trackId = null) {

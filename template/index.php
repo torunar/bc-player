@@ -20,7 +20,7 @@
                 <span class="equalizer-bar" style="--duration: 0.7s"></span>
             </div>
             <div class="track-info track-info--player">
-                <audio id="audio" onended="playNextTrack()" ontimeupdate="updateTrackProgress()"></audio>
+                <audio id="audio" onended="playNextTrack(true)" ontimeupdate="updateTrackProgress()"></audio>
                 <div class="track-info__artist track-info__artist--player"></div>
                 <div class="track-info__track track-info__track--player"></div>
             </div>
