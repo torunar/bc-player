@@ -66,7 +66,7 @@ button:disabled {
 }
 
 .equalizer-bar:after {
-    content: ' ';
+    content: '▁';
     animation-name: equalizer;
     animation-iteration-count: infinite;
     animation-direction: alternate;
