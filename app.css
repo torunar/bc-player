@@ -30,7 +30,7 @@ button:disabled {
     cursor: not-allowed;
 }
 
-.bandamp {
+.bcp {
     padding: 0 0.5em;
     max-width: 620px;
     height: 100vh;
@@ -222,7 +222,7 @@ button:disabled {
         padding: 1em;
     }
 
-    .bandamp {
+    .bcp {
         height: calc(100vh - 4em);
     }
 
