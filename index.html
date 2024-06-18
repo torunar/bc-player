@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>BandAmp 2.9</title>
-    <link rel="stylesheet" href="/static/app.css" />
-    <link rel="manifest" href="/static/manifest.json" />
+    <title>BC Player</title>
+    <link rel="stylesheet" href="app.css" />
+    <link rel="manifest" href="manifest.json" />
 </head>
 <body>
-<div class="bandamp">
+<div class="bcp">
     <div class="player player--paused">
         <div class="player__track-wrapper">
             <div class="equalizer">
@@ -40,22 +40,15 @@
         <button class="playlist-controls__clear" onclick="clearPlaylist()" title="Clear">⏏</button>
     </div>
     <div class="playlist">
-        <?php require_once __DIR__ . '/player.php' ?>
     </div>
 </div>
-<a class="project-link" target="_blank" href="https://github.com/torunar/bandamp-2.9">BandAmp 2.9</a>
-<script src="/static/app.js"></script>
+<a class="project-link" target="_blank" href="https://github.com/torunar/bc-player/">GitHub</a>
+<script src="app.js"></script>
 <script>
-    (() => {
-        setup(
-            {
-                enqueueAlbum: '<?= Action::ENQUEUE_ALBUM->value ?>',
-                setCurrentTrack: '<?= Action::SET_CURRENT_TRACK->value ?>',
-                clearQueue: '<?= Action::CLEAR_QUEUE->value ?>'
-            },
-            <?= $currentTrackId ?? 'null' ?>
-        );
-    })();
+    (() => setup(
+        JSON.parse(sessionStorage.getItem('playlist')) ?? [],
+        JSON.parse(sessionStorage.getItem('currentTrackId')) ?? null,
+    ))();
 </script>
 </body>
 </html>

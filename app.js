@@ -1,9 +1,5 @@
 let currentTrackId = null;
-let actions = {
-    enqueueAlbum: null,
-    setCurrentTrack: null,
-    clearQueue: null
-};
+let playlist = [];
 let isTrackInfoScrollPositionResetScheduled = false;
 
 function playNextTrack(isAutoPlay = false) {
@@ -28,7 +24,7 @@ function playNextTrack(isAutoPlay = false) {
     isAutoPlay && pauseTrack();
 }
 
-function playPreviousTrack(trackId = null) {
+function playPreviousTrack() {
     if (!currentTrackId) {
         return;
     }
@@ -65,6 +61,7 @@ function playTrack(trackId = null) {
 
 function setCurrentTrack(trackId = null) {
     currentTrackId = trackId;
+    sessionStorage.setItem('currentTrackId', currentTrackId);
     if (!currentTrackId) {
         return;
     }
@@ -77,8 +74,6 @@ function setCurrentTrack(trackId = null) {
         playlistItem.dataset.duration,
         playlistItem.dataset.src
     );
-
-    fetch(`/?action=${actions.setCurrentTrack}&trackId=${currentTrackId}`, {method: 'POST'});
 }
 
 function setActivePlaylistItem(trackId) {
@@ -153,7 +148,7 @@ function setPlayingTrackInformation(
 
     document.title = null !== src
         ? `${artist} — ${track}`
-        : 'Bandamp 2.9';
+        : 'BC Player';
 }
 
 function enqueueAlbum() {
@@ -165,17 +160,56 @@ function enqueueAlbum() {
     const controls = document.querySelectorAll('button');
     controls.forEach((button) => button.disabled = true);
 
-    fetch(`/?action=${actions.enqueueAlbum}&albumUrl=${encodeURIComponent(url.value)}`, {method: 'POST'})
+    fetch(`https://corsproxy.io/?${encodeURIComponent(url.value)}`)
         .then((response) => response.text())
-        .then((playlistHtml) => {
-            document.querySelector('.playlist').innerHTML = playlistHtml;
+        .then((body) => {
+            const doc = (new DOMParser()).parseFromString(body, 'text/html');
+            const albumInfo = JSON.parse(doc.querySelector('script[data-tralbum]').dataset.tralbum);
+            const tracks = albumInfo.trackinfo
+                .filter((track) => !!track.file['mp3-128'])
+                .map((track) => {
+                    return {
+                        id: track.id,
+                        duration: track.duration | 0,
+                        src: track.file['mp3-128'],
+                        artist: albumInfo.artist,
+                        title: track.title
+                    };
+                });
+
+            document.querySelector('.playlist').innerHTML += renderTracks(tracks);
+
             controls.forEach((button) => button.disabled = false);
             url.value = '';
             if (!currentTrackId) {
                 setCurrentTrack(parseInt(document.querySelector('.playlist__item').dataset.id));
             }
+
+            setPlaylist([...playlist, ...tracks]);
             setActivePlaylistItem(currentTrackId);
         });
+}
+
+function renderTracks(tracks = [])
+{
+    return tracks.reduce((html, track) =>
+        `${html}
+        <div id="playlistItem${track.id}"
+            class="playlist__item"
+            ondblclick="playTrack(${track.id})"
+            data-src="${track.src}"
+            data-duration="${track.duration}"
+            data-id="${track.id}"
+        >
+            <div class="track-info track-info--playlist" title="${track.artist} — ${track.title}">
+                <div class="track-info__number"></div>
+                <div class="track-info__artist track-info__artist--playlist">${track.artist}</div>
+                <div class="track-info__track track-info__track--playlist">${track.title}</div>
+                <div class="track-info__duration">${String((track.duration / 60) | 0).padStart(2, '0')}:${String(track.duration % 60).padStart(2, '0')}</div>
+            </div>
+        </div>`,
+        ''
+    );
 }
 
 function scrollTrackInfo() {
@@ -195,11 +229,10 @@ function scrollTrackInfo() {
 function clearPlaylist() {
     stopMusic();
     setCurrentTrack(null);
+    setPlaylist([]);
 
     document.querySelector('.playlist').innerHTML = '';
     setPlayingTrackInformation('', '', 1);
-
-    fetch(`/?action=${actions.clearQueue}`, {method: 'POST'});
 }
 
 function seekTrack(percentage) {
@@ -210,11 +243,13 @@ function seekTrack(percentage) {
     document.getElementById('audio').currentTime = document.querySelector('.player__progress').max * percentage;
 }
 
-function setup(actionNames, trackId) {
-    actions.enqueueAlbum = actionNames.enqueueAlbum;
-    actions.setCurrentTrack = actionNames.setCurrentTrack;
-    actions.clearQueue = actionNames.clearQueue;
+function setPlaylist(newPlaylist = [])
+{
+    playlist = newPlaylist;
+    sessionStorage.setItem('playlist', JSON.stringify(newPlaylist));
+}
 
+function setup(playlist, currentTrackId) {
     navigator.mediaSession.setActionHandler('play', () => {
         unpauseTrack();
     });
@@ -233,6 +268,9 @@ function setup(actionNames, trackId) {
         seekTrack((event.clientX - seeker.left) / seeker.width);
     };
 
-    setCurrentTrack(trackId);
+    setPlaylist(playlist);
+    document.querySelector('.playlist').innerHTML = renderTracks(playlist);
+
+    setCurrentTrack(currentTrackId);
     setInterval(scrollTrackInfo, 1100);
 }
