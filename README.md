@@ -1,4 +1,4 @@
-# [BC Player](https://torunar.github.io/bc-player/)
+# <img src="favicon.ico" width="24" height="24" align="baseline" /> [BC Player](https://torunar.github.io/bc-player/)
 
 ![](.github/img.png)
 
@@ -6,7 +6,9 @@ Bandcamp music player with a queue.
 
 ## Bandcamp integraiton
 
-I also made a Firefox extension that adds "Enqueue in BC Player" context menu action so you can add albums to your listening queue directly from the Bandcamp feed page.
+I also made a Firefox extension that adds "Enqueue in BC Player" context menu action so you can add albums to your listening queue directly from the Bandcamp feed page:
+
+[ext.webm](https://github.com/torunar/bc-player/assets/1062217/58059ebb-c792-4636-b176-4a7550617fde)
 
 You can download the extension here: [bc-player-helper.xpi](https://github.com/torunar/bc-player-helper/releases/download/latest/bc-player-helper.xpi).
 
@@ -14,6 +16,12 @@ You can download the extension here: [bc-player-helper.xpi](https://github.com/t
 
 Bandcamp doesn't let you play multiple albums in a queue.
 I didn't like it, so I fixed the problem the only way I know: with some good ol' HTML, CSS and JS.
+
+## Privacy
+
+[https://corsproxy.io/](https://corsproxy.io/) is used to fetch pages directly from Bandcamp: they claim to store no logs.
+
+BC Player only stores data in your browser's session storage.
 
 ## Contributing
 

@@ -7,11 +7,10 @@ function playNextTrack(isAutoPlay = false) {
         return;
     }
 
-    const allPlaylistItems = document.querySelectorAll('.playlist__item');
     let nextTrackId = null;
-    for (let i = 0; i < allPlaylistItems.length - 1; i++) {
-        if (parseInt(allPlaylistItems[i].dataset.id) === currentTrackId) {
-            nextTrackId = parseInt(allPlaylistItems[i + 1].dataset.id);
+    for (let i = 0; i < playlist.length - 1; i++) {
+        if (playlist[i].id === currentTrackId) {
+            nextTrackId = playlist[i + 1].id;
             break;
         }
     }
@@ -29,11 +28,10 @@ function playPreviousTrack() {
         return;
     }
 
-    const allPlaylistItems = document.querySelectorAll('.playlist__item');
     let previousTrackId = null;
-    for (let i = 1; i < allPlaylistItems.length; i++) {
-        if (parseInt(allPlaylistItems[i].dataset.id) === currentTrackId) {
-            previousTrackId = parseInt(allPlaylistItems[i - 1].dataset.id);
+    for (let i = 1; i < playlist.length; i++) {
+        if (playlist[i].id === currentTrackId) {
+            previousTrackId = playlist[i - 1].id;
             break;
         }
     }
@@ -66,14 +64,9 @@ function setCurrentTrack(trackId = null) {
         return;
     }
 
-    const playlistItem = document.getElementById(`playlistItem${trackId}`);
+    const playlistItem = getTrack(trackId);
     setActivePlaylistItem(trackId);
-    setPlayingTrackInformation(
-        playlistItem.querySelector('.track-info__artist').textContent,
-        playlistItem.querySelector('.track-info__track').textContent,
-        playlistItem.dataset.duration,
-        playlistItem.dataset.src
-    );
+    setPlayingTrackInformation(playlistItem.artist, playlistItem.title, playlistItem.duration, playlistItem.src);
 }
 
 function setActivePlaylistItem(trackId) {
@@ -95,8 +88,7 @@ function stopPlaylist() {
         return;
     }
 
-    const resetTrackId = parseInt(/(\d+)$/.exec(document.querySelector('.playlist__item').id)[1]);
-    setCurrentTrack(resetTrackId);
+    setCurrentTrack(playlist[0].id);
     stopMusic();
 }
 
@@ -166,7 +158,7 @@ function enqueueAlbum() {
             const doc = (new DOMParser()).parseFromString(body, 'text/html');
             const albumInfo = JSON.parse(doc.querySelector('script[data-tralbum]').dataset.tralbum);
             const tracks = albumInfo.trackinfo
-                .filter((track) => !!track.file['mp3-128'])
+                .filter((track) => !!track.file && !!track.file['mp3-128'])
                 .map((track) => {
                     return {
                         id: track.id,
@@ -177,16 +169,17 @@ function enqueueAlbum() {
                     };
                 });
 
+            setPlaylist([...playlist, ...tracks]);
             document.querySelector('.playlist').innerHTML += renderTracks(tracks);
 
+            if (!currentTrackId) {
+                setCurrentTrack(playlist[0]?.id);
+            }
+            setActivePlaylistItem(currentTrackId);
+        })
+        .finally(() => {
             controls.forEach((button) => button.disabled = false);
             url.value = '';
-            if (!currentTrackId) {
-                setCurrentTrack(parseInt(document.querySelector('.playlist__item').dataset.id));
-            }
-
-            setPlaylist([...playlist, ...tracks]);
-            setActivePlaylistItem(currentTrackId);
         });
 }
 
@@ -249,19 +242,22 @@ function setPlaylist(newPlaylist = [])
     sessionStorage.setItem('playlist', JSON.stringify(newPlaylist));
 }
 
+function getTrack(trackId)
+{
+    for (let track of playlist) {
+        if (track.id === trackId) {
+            return track;
+        }
+    }
+
+    return null;
+}
+
 function setup(playlist, currentTrackId) {
-    navigator.mediaSession.setActionHandler('play', () => {
-        unpauseTrack();
-    });
-    navigator.mediaSession.setActionHandler('pause', () => {
-        pauseTrack();
-    });
-    navigator.mediaSession.setActionHandler('previoustrack', () => {
-        playPreviousTrack();
-    });
-    navigator.mediaSession.setActionHandler('nexttrack', () => {
-        playNextTrack();
-    });
+    navigator.mediaSession.setActionHandler('play', unpauseTrack);
+    navigator.mediaSession.setActionHandler('pause', pauseTrack);
+    navigator.mediaSession.setActionHandler('previoustrack', playPreviousTrack);
+    navigator.mediaSession.setActionHandler('nexttrack', playNextTrack);
 
     document.querySelector('.player__progress').onclick = (event) => {
         let seeker = event.target.getBoundingClientRect();
@@ -271,6 +267,9 @@ function setup(playlist, currentTrackId) {
     setPlaylist(playlist);
     document.querySelector('.playlist').innerHTML = renderTracks(playlist);
 
+    if (playlist.length === 0) {
+        currentTrackId = null;
+    }
     setCurrentTrack(currentTrackId);
     setInterval(scrollTrackInfo, 1100);
 }
