@@ -10,6 +10,7 @@
 </head>
 <body>
 <div class="bcp">
+    <audio id="audio" onended="playNextTrack(true)" ontimeupdate="updateTrackProgress()"></audio>
     <div class="player player--paused">
         <div class="player__track-wrapper">
             <div class="equalizer">
@@ -20,9 +21,10 @@
                 <span class="equalizer-bar" style="--duration: 0.7s"></span>
             </div>
             <div class="track-info track-info--player">
-                <audio id="audio" onended="playNextTrack(true)" ontimeupdate="updateTrackProgress()"></audio>
-                <div class="track-info__artist track-info__artist--player"></div>
-                <div class="track-info__track track-info__track--player"></div>
+                <div class="track-info__scrollable-container">
+                    <div class="track-info__artist track-info__artist--player"></div>
+                    <div class="track-info__track track-info__track--player"></div>
+                </div>
             </div>
         </div>
         <progress class="player__progress" max="1" value="0"></progress>

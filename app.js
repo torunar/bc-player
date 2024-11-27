@@ -205,20 +205,6 @@ function renderTracks(tracks = [])
     );
 }
 
-function scrollTrackInfo() {
-    const trackInfo = document.querySelector('.track-info--player');
-    const targetScroll = trackInfo.scrollLeft += 10;
-    if (trackInfo.scrollLeft < targetScroll) {
-        if (isTrackInfoScrollPositionResetScheduled) {
-            trackInfo.scrollLeft = 0;
-            isTrackInfoScrollPositionResetScheduled = false;
-            return;
-        }
-
-        isTrackInfoScrollPositionResetScheduled = true;
-    }
-}
-
 function clearPlaylist() {
     stopMusic();
     setCurrentTrack(null);
@@ -271,5 +257,4 @@ function setup(playlist, currentTrackId) {
         currentTrackId = null;
     }
     setCurrentTrack(currentTrackId);
-    setInterval(scrollTrackInfo, 1100);
 }
