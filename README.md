@@ -19,9 +19,14 @@ I didn't like it, so I fixed the problem the only way I know: with some good ol'
 
 ## Privacy
 
-[https://corsproxy.io/](https://corsproxy.io/) is used to fetch pages directly from Bandcamp: they claim to store no logs.
-
 BC Player only stores data in your browser's session storage.
+The data stored is current playlist.
+
+I don't collect any logs nor run any marketing research on you.
+I don't and will never care about this stuff in my pet projects.
+
+[corsproxy.io](https://corsproxy.io/) is used to fetch pages directly from Bandcamp, though. 
+Read their [Privacy Policy](https://corsproxy.io/privacy/) to make sure you're okay with it.
 
 ## Contributing
 
