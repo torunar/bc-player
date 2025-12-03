@@ -1,6 +1,8 @@
 let currentTrackId = null;
 let playlist = [];
-let isTrackInfoScrollPositionResetScheduled = false;
+let playedTrackIds = [];
+let isPlaying = false;
+let isShuffled = false;
 
 function playNextTrack(isAutoPlay = false) {
     if (!currentTrackId) {
@@ -8,10 +10,14 @@ function playNextTrack(isAutoPlay = false) {
     }
 
     let nextTrackId = null;
-    for (let i = 0; i < playlist.length - 1; i++) {
-        if (playlist[i].id === currentTrackId) {
-            nextTrackId = playlist[i + 1].id;
-            break;
+    if (isShuffled) {
+        nextTrackId = getRandomTrackId();
+    } else {
+        for (let i = 0; i < playlist.length - 1; i++) {
+            if (playlist[i].id === currentTrackId) {
+                nextTrackId = playlist[i + 1].id;
+                break;
+            }
         }
     }
 
@@ -23,16 +29,28 @@ function playNextTrack(isAutoPlay = false) {
     isAutoPlay && pauseTrack();
 }
 
+function getRandomTrackId() {
+    const candidates = playlist
+        .map(track => track.id)
+        .filter(id => !playedTrackIds.includes(id) && id !== currentTrackId);
+
+    return candidates[Math.floor(Math.random() * candidates.length)] ?? null;
+}
+
 function playPreviousTrack() {
     if (!currentTrackId) {
         return;
     }
 
     let previousTrackId = null;
-    for (let i = 1; i < playlist.length; i++) {
-        if (playlist[i].id === currentTrackId) {
-            previousTrackId = playlist[i - 1].id;
-            break;
+    if (isShuffled) {
+        previousTrackId = getRandomTrackId();
+    } else {
+        for (let i = 1; i < playlist.length; i++) {
+            if (playlist[i].id === currentTrackId) {
+                previousTrackId = playlist[i - 1].id;
+                break;
+            }
         }
     }
 
@@ -57,6 +75,12 @@ function playTrack(trackId = null) {
     unpauseTrack();
 }
 
+function togglePlayPause() {
+    isPlaying
+        ? pauseTrack()
+        : unpauseTrack();
+}
+
 function setCurrentTrack(trackId = null) {
     currentTrackId = trackId;
     sessionStorage.setItem('currentTrackId', currentTrackId);
@@ -67,6 +91,8 @@ function setCurrentTrack(trackId = null) {
     const playlistItem = getTrack(trackId);
     setActivePlaylistItem(trackId);
     setPlayingTrackInformation(playlistItem.artist, playlistItem.title, playlistItem.duration, playlistItem.src);
+
+    playedTrackIds.push(trackId);
 }
 
 function setActivePlaylistItem(trackId) {
@@ -88,6 +114,7 @@ function stopPlaylist() {
         return;
     }
 
+    playedTrackIds = [];
     setCurrentTrack(playlist[0].id);
     stopMusic();
 }
@@ -101,6 +128,8 @@ function pauseTrack() {
 
     document.querySelector('.player').className = document.querySelector('.player').className.replace(/\s*player--paused/, '');
     document.querySelector('.player').className = `${document.querySelector('.player').className} player--paused`;
+
+    isPlaying = false;
 }
 
 function unpauseTrack() {
@@ -111,6 +140,8 @@ function unpauseTrack() {
     document.getElementById(`audio`).play();
 
     document.querySelector('.player').className = document.querySelector('.player').className.replace(/\s*player--paused/, '');
+
+    isPlaying = true;
 }
 
 function updateTrackProgress(trackId = null) {
@@ -209,6 +240,7 @@ function clearPlaylist() {
     stopMusic();
     setCurrentTrack(null);
     setPlaylist([]);
+    playedTrackIds = [];
 
     document.querySelector('.playlist').innerHTML = '';
     setPlayingTrackInformation('', '', 1);
@@ -237,6 +269,16 @@ function getTrack(trackId)
     }
 
     return null;
+}
+
+function toggleShuffle()
+{
+    isShuffled = !isShuffled;
+
+    const shuffleButton = document.querySelector('.player__controls__toggle-shuffle');
+    isShuffled
+        ? shuffleButton.className = `${shuffleButton.className} player__controls__toggle-shuffle--active`
+        : shuffleButton.className = shuffleButton.className.replace(/\s*player__controls__toggle-shuffle--active/, '');
 }
 
 function setup(playlist, currentTrackId) {

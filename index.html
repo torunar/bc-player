@@ -29,17 +29,17 @@
         </div>
         <progress class="player__progress" max="1" value="0"></progress>
         <div class="player__controls">
-            <button onclick="playPreviousTrack()">⏮</button>
-            <button onclick="pauseTrack()">⏸</button>
-            <button onclick="unpauseTrack()">▶</button>
-            <button onclick="stopPlaylist()">⏹</button>
-            <button onclick="playNextTrack()">⏭</button>
+            <button class="player__controls__icon-button" onclick="playPreviousTrack()">⏮</button>
+            <button class="player__controls__icon-button" onclick="togglePlayPause()">⏯</button>
+            <button class="player__controls__icon-button" onclick="stopPlaylist()">⏹</button>
+            <button class="player__controls__icon-button" onclick="playNextTrack()">⏭</button>
+            <button class="player__controls__icon-button player__controls__icon-button--clear" onclick="clearPlaylist()" title="Clear">⏏</button>
+            <button class="player__controls__toggle-shuffle" onclick="toggleShuffle()">shuffle</button>
         </div>
     </div>
     <div class="playlist-controls">
         <input class="playlist-controls__album-url" type="url" required value="" placeholder="Bandcamp album URL">
         <button class="playlist-controls__add" onclick="enqueueAlbum()">➕</button>
-        <button class="playlist-controls__clear" onclick="clearPlaylist()" title="Clear">⏏</button>
     </div>
     <div class="playlist">
     </div>

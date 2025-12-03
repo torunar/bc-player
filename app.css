@@ -120,9 +120,35 @@ button:disabled {
     margin-bottom: 1em;
 }
 
-.player__controls button {
-    flex: 20%;
+.player__controls__icon-button {
     font-size: 150%;
+    flex-grow: 1;
+}
+
+.player__controls__icon-button--clear {
+    margin: 0 1em;
+}
+
+.player__controls__toggle-shuffle {
+    padding: 0 0.5em 0 2em;
+    position: relative;
+    text-transform: uppercase;
+}
+
+.player__controls__toggle-shuffle:before {
+    display: block;
+    width: 1em;
+    height: 0.6em;
+    top: 0.5em;
+    left: 0.5em;
+    content: '';
+    border: 2px solid var(--borderColor);
+    background: var(--playerBgColor);
+    position: absolute;
+}
+
+.player__controls__toggle-shuffle--active:before {
+    background: var(--controlColor);
 }
 
 .playlist {
