@@ -139,7 +139,7 @@ button:disabled {
     display: block;
     width: 1em;
     height: 0.6em;
-    top: 0.5em;
+    top: 0.72em;
     left: 0.5em;
     content: '';
     border: 2px solid var(--borderColor);
