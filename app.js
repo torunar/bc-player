@@ -183,7 +183,7 @@ function enqueueAlbum() {
     const controls = document.querySelectorAll('button');
     controls.forEach((button) => button.disabled = true);
 
-    fetch(`https://corsproxy.io/?url=${encodeURIComponent(url.value)}`)
+    fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url.value)}`)
         .then((response) => response.text())
         .then((body) => {
             const doc = (new DOMParser()).parseFromString(body, 'text/html');
