@@ -25,7 +25,7 @@ The data stored is current playlist.
 I don't collect any logs nor run any marketing research on you.
 I don't and will never care about this stuff in my pet projects.
 
-[allOrigins](https://allorigins.win/) is used to fetch pages directly from Bandcamp.
+[corsproxy.io](https://corsproxy.io/) is used to fetch pages directly from Bandcamp.
 
 ## Contributing
 
